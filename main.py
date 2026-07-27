@@ -5,41 +5,49 @@ import shutil
 # Variables
 base = Path.cwd()
 files = list(base.iterdir())
+categories = {
+    "documents": [".docx", ".doc", ".pdf", ".txt", ".xlsx", ".pptx"],
+    "images": [".png", ".jpeg", ".jpg", ".gif", ".svg", ".webp"],
+    "audio": [".mp3", ".wav", ".flac"],
+    "video": [".mp4", ".mkv", ".avi", ".mov"]
+}
 
 def create_folders():
     """Creates the folders if they do not already exist"""
-    folder_names = ["Documents", "Videos", "Pictures", "Music", "Misc"]
+    folder_names = ["Documents", "Videos", "Images", "Audio", "Misc"]
     
     for folder in folder_names:
         full_path = base / folder
         full_path.mkdir(exist_ok=True)
+        
+def classify_files(file):
+    suffix = file.suffix.lower()
+    for category, extension in categories.items():
+        if suffix in extension:
+            return category
+        
+    return "misc"
 
 def move_files():
+    folder_structure = {
+                "documents": "Documents",
+                "audio": "Audio",
+                "video": "Videos",
+                "images": "Images",
+                "misc": "Misc"
+            }
+    
     for file in files:
-        suffix = file.suffix.lower()
         source = Path(file)
         
-        if file.is_dir():
+        if file.is_dir() or file.suffix.lower() == ".py":
             continue
+
+        category = classify_files(file)
+        destination_folder = folder_structure.get(category, "Misc")
+        destination = base / destination_folder
         
-        match suffix:
-            case ".pdf" | ".docx" | ".doc":
-                destination = Path(f"{base}/Documents")
-                shutil.move(source, destination)
-            case ".mp3":
-                destination = Path(f"{base}/Music")
-                shutil.move(source, destination)
-            case ".mp4":
-                destination = Path(f"{base}/Videos")
-                shutil.move(source, destination)
-            case ".jpg" | ".jpeg" | ".png":
-                destination = Path(f"{base}/Pictures")
-                shutil.move(source, destination)
-            case ".py":
-                continue
-            case _:
-                destination = Path(f"{base}/Misc")
-                shutil.move(source, destination)
+        shutil.move(source, destination)
 
 create_folders()
 move_files()
