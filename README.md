@@ -24,6 +24,7 @@ This project was created to strengthen Python skills in file system automation.
   * Code files
 * Creates destination folders automatically if they do not exist
 * Skips files that are already organized
+* Logs every file operation to a log file
 
 ---
 
@@ -42,6 +43,7 @@ This project was created to strengthen Python skills in file system automation.
 3. The file is matched to a predefined category.
 4. If the category folder does not exist, it is created automatically.
 5. The file is moved into the appropriate folder.
+6. Record of every action is added to "organized_files.log" for auditing and troubleshooting.
 
 ---
 
@@ -129,7 +131,7 @@ The following features are planned for future versions:
 * Recursive directory scanning
 * Duplicate file detection
 * Automatic filename conflict resolution
-* Logging
+* ~~Logging~~ - **Completed 7/30/26**
 * Dry-run mode to preview changes
 * Command-line arguments 
 * Scheduled execution using Windows Task Scheduler or cron
@@ -145,6 +147,7 @@ This project demonstrates practical experience with:
 * Working with file paths
 * Standard library usage
 * Writing maintainable, readable code
+* Logging
 
 ---
 
