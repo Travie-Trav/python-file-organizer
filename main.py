@@ -1,6 +1,18 @@
 # Imports
 from pathlib import Path
 import shutil
+import logging
+
+# Logging
+LOG_FILE = "organized_files.log"
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+file_handler = logging.FileHandler(LOG_FILE)
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(logging.Formatter('%(asctime)s: %(message)s'))
+
+logger.addHandler(file_handler)
 
 # Variables
 base = Path.cwd()
@@ -40,14 +52,18 @@ def move_files():
     for file in files:
         source = Path(file)
         
-        if file.is_dir() or file.suffix.lower() == ".py":
+        if file.is_dir() or file.suffix.lower() == ".py" or file.name == LOG_FILE:
             continue
 
         category = classify_files(file)
         destination_folder = folder_structure.get(category, "Misc")
         destination = base / destination_folder
         
-        shutil.move(source, destination)
-
+        try:
+            shutil.move(source, destination)
+            logger.info("Moved %s -> %s/", source.name, destination_folder)
+        except Exception as err:
+            logger.exception("Failed to move %s: %s", source.name, err)
+            
 create_folders()
 move_files()
